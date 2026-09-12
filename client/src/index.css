@@ -1508,3 +1508,21 @@ button:hover {
   } .dashboard-welcome h2 { font-size: 21px;
   }
 }
+
+.auth-brand {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.auth-card h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.auth-card > p {
+  margin-top: 0;
+}
