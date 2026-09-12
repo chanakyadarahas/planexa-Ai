@@ -94,7 +94,7 @@ export const loginUser = async (req, res) => {
         userId: user.id,
         email: user.email,
       },
-      "your-secret-key",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
