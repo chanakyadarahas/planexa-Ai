@@ -41,7 +41,7 @@ function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <h1 className="auth-brand">Planexa AI</h1>
-          <h2>Welcome Back</h2>
+          
             <p>Log in to continue to Planexa AI</p>
 
         <form onSubmit={handleLogin}>

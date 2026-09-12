@@ -612,6 +612,7 @@ button:hover {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  margin-bottom:24px;
 }
 
 .auth-button:hover {
@@ -1514,6 +1515,7 @@ button:hover {
   font-weight: 700;
   margin-bottom: 12px;
   text-align: center;
+  color: #2563eb;
 }
 
 .auth-card h2 {
@@ -1521,6 +1523,7 @@ button:hover {
   font-weight: 600;
   margin-bottom: 8px;
   text-align: center;
+
 }
 
 .auth-card > p {
