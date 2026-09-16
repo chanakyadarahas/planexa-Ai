@@ -328,7 +328,45 @@ function Tasks() {
     );
   });
 
-    return (
+    const getProjectName = (projectId) => {
+    const project = projects.find(
+      (project) =>
+        String(project.id) === String(projectId)
+    );
+
+    return project ? project.name : "Unknown Project";
+  };
+
+  const formatDate = (date) => {
+    if (!date) {
+      return "No due date";
+    }
+
+    const dateOnly = date.substring(0, 10);
+    const [year, month, day] = dateOnly.split("-");
+
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    ).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const getStatusClass = (status) => {
+    return `status-badge ${status
+      .toLowerCase()
+      .replace(/\s+/g, "-")}`;
+  };
+
+  const getPriorityClass = (priority) => {
+    return `priority-badge ${priority.toLowerCase()}`;
+  };
+
+  return (
       <div className="tasks-page">
 
       {/* Page Header */}
