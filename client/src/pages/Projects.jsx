@@ -137,33 +137,33 @@ function Projects() {
   };
 
   const editProject = (project) => {
-  setEditingId(project.id);
+    setEditingId(project.id);
 
-  setFormData({
-    name: project.name,
-    description: project.description || "",
-    status: project.status,
-    start_date: project.start_date
-      ? project.start_date.substring(0, 10)
-      : "",
-    due_date: project.due_date
-      ? project.due_date.substring(0, 10)
-      : "",
-  });
+    setFormData({
+      name: project.name,
+      description: project.description || "",
+      status: project.status,
+      start_date: project.start_date
+        ? project.start_date.substring(0, 10)
+        : "",
+      due_date: project.due_date
+        ? project.due_date.substring(0, 10)
+        : "",
+    });
 
-  setFormError("");
-  setSuccessMessage("");
+    setFormError("");
+    setSuccessMessage("");
 
-  // Automatically scroll to the Edit Project form
-  setTimeout(() => {
-    document
-      .querySelector(".project-form-section")
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-  }, 100);
-};
+    // Automatically scroll to the Edit Project form
+    setTimeout(() => {
+      document
+        .querySelector(".project-form-section")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 100);
+  };
 
   const deleteProject = async (id) => {
     const confirmed = window.confirm(
@@ -295,6 +295,7 @@ function Projects() {
 
           {/* Description */}
           <div className="form-field description-field">
+
             <label>Description</label>
 
             <textarea
@@ -321,10 +322,12 @@ function Projects() {
                 {aiError}
               </p>
             )}
+
           </div>
 
           {/* Start Date */}
           <div className="form-field">
+
             <label>Start Date</label>
 
             <input
@@ -333,10 +336,12 @@ function Projects() {
               value={formData.start_date}
               onChange={handleChange}
             />
+
           </div>
 
           {/* Due Date */}
           <div className="form-field">
+
             <label>Due Date</label>
 
             <input
@@ -345,6 +350,7 @@ function Projects() {
               value={formData.due_date}
               onChange={handleChange}
             />
+
           </div>
 
           {/* Error */}
@@ -374,10 +380,21 @@ function Projects() {
         </form>
       </div>
 
+      {/* Your Projects */}
+      <div className="projects-list-section">
+
+        <div className="projects-list-header">
+          <h2>
+            Your Projects ({filteredProjects.length})
+          </h2>
+        </div>
+
+      </div>
+
       {/* Search and Filter */}
       <div className="project-controls">
 
-        {/* Search FIRST */}
+        {/* Search */}
         <input
           type="text"
           placeholder="Search projects..."
@@ -387,8 +404,9 @@ function Projects() {
           }
         />
 
-        {/* Status SECOND */}
+        {/* Status */}
         <div className="filter-group">
+
           <label>Status:</label>
 
           <select
@@ -415,19 +433,13 @@ function Projects() {
               Completed
             </option>
           </select>
+
         </div>
 
       </div>
 
-      {/* Projects List */}
+      {/* Project List */}
       <div className="projects-list-section">
-
-        <div className="projects-list-header">
-          <h2>
-            All Projects (
-            {filteredProjects.length})
-          </h2>
-        </div>
 
         {loading ? (
           <p>Loading projects...</p>
@@ -439,6 +451,7 @@ function Projects() {
           <div className="projects-list">
 
             {filteredProjects.map((project) => (
+
               <div
                 key={project.id}
                 className="project-card"
@@ -448,6 +461,7 @@ function Projects() {
                 <div className="project-card-header">
 
                   <div>
+
                     <h3>{project.name}</h3>
 
                     {project.description && (
@@ -455,6 +469,7 @@ function Projects() {
                         {project.description}
                       </p>
                     )}
+
                   </div>
 
                   <div className="project-badges">
@@ -475,6 +490,7 @@ function Projects() {
                 <div className="project-details">
 
                   <div className="project-detail">
+
                     <span className="detail-label">
                       Progress
                     </span>
@@ -482,9 +498,11 @@ function Projects() {
                     <span className="detail-value">
                       {project.progress}%
                     </span>
+
                   </div>
 
                   <div className="project-detail">
+
                     <span className="detail-label">
                       Tasks
                     </span>
@@ -493,9 +511,11 @@ function Projects() {
                       {project.completed_tasks} /{" "}
                       {project.total_tasks}
                     </span>
+
                   </div>
 
                   <div className="project-detail">
+
                     <span className="detail-label">
                       Start Date
                     </span>
@@ -505,9 +525,11 @@ function Projects() {
                         project.start_date
                       )}
                     </span>
+
                   </div>
 
                   <div className="project-detail">
+
                     <span className="detail-label">
                       Due Date
                     </span>
@@ -517,6 +539,7 @@ function Projects() {
                         project.due_date
                       )}
                     </span>
+
                   </div>
 
                 </div>
@@ -545,6 +568,7 @@ function Projects() {
                 </div>
 
               </div>
+
             ))}
 
           </div>

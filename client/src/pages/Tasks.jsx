@@ -125,7 +125,10 @@ function Tasks() {
 
       setAiTasks(response.data.tasks);
     } catch (error) {
-      console.error("Error generating AI tasks:", error);
+      console.error(
+        "Error generating AI tasks:",
+        error
+      );
 
       setAiTaskError(
         error.response?.data?.error ||
@@ -238,33 +241,34 @@ function Tasks() {
   };
 
   const editTask = (task) => {
-  setEditingId(task.id);
+    setEditingId(task.id);
 
-  setFormData({
-    project_id: task.project_id,
-    title: task.title,
-    description: task.description || "",
-    priority: task.priority,
-    status: task.status,
-    due_date: task.due_date
-      ? task.due_date.substring(0, 10)
-      : "",
-    assignee: task.assignee || "",
-  });
+    setFormData({
+      project_id: task.project_id,
+      title: task.title,
+      description: task.description || "",
+      priority: task.priority,
+      status: task.status,
+      due_date: task.due_date
+        ? task.due_date.substring(0, 10)
+        : "",
+      assignee: task.assignee || "",
+    });
 
-  setFormError("");
-  setSuccessMessage("");
+    setFormError("");
+    setSuccessMessage("");
 
-  // Automatically scroll to the Edit Task form
-  setTimeout(() => {
-    document
-      .querySelector(".task-form-section")
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-  }, 100);
-};
+    // Automatically scroll to the Edit Task form
+    setTimeout(() => {
+      document
+        .querySelector(".task-form-section")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 100);
+  };
+
   const deleteTask = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this task?"
@@ -373,11 +377,7 @@ function Tasks() {
         <p>Manage and track your project tasks.</p>
       </div>
 
-
-      {/* =====================================
-          CREATE / EDIT TASK
-      ===================================== */}
-
+      {/* Create / Edit Task */}
       <div className="task-form-section">
 
         <h2>
@@ -393,6 +393,7 @@ function Tasks() {
 
           {/* Project */}
           <div className="form-field">
+
             <label>
               Project <span>*</span>
             </label>
@@ -415,11 +416,12 @@ function Tasks() {
                 </option>
               ))}
             </select>
-          </div>
 
+          </div>
 
           {/* Task Title */}
           <div className="form-field">
+
             <label>
               Task Title <span>*</span>
             </label>
@@ -430,11 +432,12 @@ function Tasks() {
               value={formData.title}
               onChange={handleChange}
             />
-          </div>
 
+          </div>
 
           {/* Status */}
           <div className="form-field">
+
             <label>
               Status <span>*</span>
             </label>
@@ -456,11 +459,12 @@ function Tasks() {
                 Completed
               </option>
             </select>
-          </div>
 
+          </div>
 
           {/* Description */}
           <div className="form-field description-field">
+
             <label>Description</label>
 
             <textarea
@@ -491,11 +495,12 @@ function Tasks() {
                 {aiDescriptionError}
               </p>
             )}
-          </div>
 
+          </div>
 
           {/* Priority */}
           <div className="form-field">
+
             <label>
               Priority <span>*</span>
             </label>
@@ -517,11 +522,12 @@ function Tasks() {
                 High
               </option>
             </select>
-          </div>
 
+          </div>
 
           {/* Due Date */}
           <div className="form-field">
+
             <label>
               Due Date <span>*</span>
             </label>
@@ -532,11 +538,12 @@ function Tasks() {
               value={formData.due_date}
               onChange={handleChange}
             />
-          </div>
 
+          </div>
 
           {/* Assignee */}
           <div className="form-field">
+
             <label>
               Assignee <span>*</span>
             </label>
@@ -547,8 +554,8 @@ function Tasks() {
               value={formData.assignee}
               onChange={handleChange}
             />
-          </div>
 
+          </div>
 
           {/* Error */}
           {formError && (
@@ -557,14 +564,12 @@ function Tasks() {
             </p>
           )}
 
-
           {/* Success */}
           {successMessage && (
             <p className="success-message">
               {successMessage}
             </p>
           )}
-
 
           {/* Submit */}
           <button
@@ -577,29 +582,26 @@ function Tasks() {
           </button>
 
         </form>
-
       </div>
 
-
-      {/* =====================================
-          AI TASK GENERATOR
-      ===================================== */}
-
+      {/* AI Task Generator */}
       <div className="ai-task-section">
 
         <div className="page-header">
+
           <h2>AI Task Generator</h2>
 
           <p>
             Select a project and let AI suggest
             practical development tasks.
           </p>
-        </div>
 
+        </div>
 
         <div className="ai-task-form">
 
           <div className="form-field">
+
             <label>Project</label>
 
             <select
@@ -612,6 +614,7 @@ function Tasks() {
                 })
               }
             >
+
               <option value="">
                 Select Project
               </option>
@@ -624,16 +627,16 @@ function Tasks() {
                   {project.name}
                 </option>
               ))}
-            </select>
-          </div>
 
+            </select>
+
+          </div>
 
           {aiTaskError && (
             <p className="form-error">
               {aiTaskError}
             </p>
           )}
-
 
           <button
             type="button"
@@ -648,26 +651,30 @@ function Tasks() {
 
         </div>
 
-
         {aiTasks && (
           <div className="ai-results">
+
             <h3>AI Suggested Tasks</h3>
+
             <pre>{aiTasks}</pre>
+
           </div>
         )}
 
       </div>
 
+      {/* Select Project to View Existing Tasks */}
+      <div className="task-project-selector">
 
-      {/* =====================================
-          SEARCH AND FILTERS
-      ===================================== */}
+        <div className="projects-list-header">
+          <h2>Select a Project</h2>
+        </div>
 
-      <div className="task-controls">
+        <div className="form-field">
 
-        {/* Project FIRST */}
-        <div className="filter-group">
-          <label>Project:</label>
+          <label>
+            Select a project to view its existing tasks.
+          </label>
 
           <select
             value={projectFilter}
@@ -677,6 +684,7 @@ function Tasks() {
               )
             }
           >
+
             <option value="">
               Select Project
             </option>
@@ -689,11 +697,36 @@ function Tasks() {
                 {project.name}
               </option>
             ))}
+
           </select>
+
         </div>
 
+      </div>
 
-        {/* Search SECOND */}
+      {/* Your Tasks */}
+      <div className="tasks-list-section">
+
+        <div className="tasks-list-header">
+
+          <h2>
+            {projectFilter
+              ? `Your Tasks — ${getProjectName(
+                  projectFilter
+                )} (${
+                  filteredTasks.length
+                })`
+              : "Your Tasks"}
+          </h2>
+
+        </div>
+
+      </div>
+
+      {/* Search and Filters */}
+      <div className="task-controls">
+
+        {/* Search */}
         <input
           type="text"
           placeholder="Search tasks..."
@@ -703,9 +736,9 @@ function Tasks() {
           }
         />
 
-
-        {/* Status THIRD */}
+        {/* Status */}
         <div className="filter-group">
+
           <label>Status:</label>
 
           <select
@@ -716,6 +749,7 @@ function Tasks() {
               )
             }
           >
+
             <option value="All">
               All
             </option>
@@ -731,12 +765,14 @@ function Tasks() {
             <option value="Completed">
               Completed
             </option>
+
           </select>
+
         </div>
 
-
-        {/* Priority FOURTH */}
+        {/* Priority */}
         <div className="filter-group">
+
           <label>Priority:</label>
 
           <select
@@ -747,6 +783,7 @@ function Tasks() {
               )
             }
           >
+
             <option value="All">
               All
             </option>
@@ -762,45 +799,38 @@ function Tasks() {
             <option value="High">
               High
             </option>
+
           </select>
+
         </div>
 
       </div>
 
-
-      {/* =====================================
-          TASKS LIST
-      ===================================== */}
-
+      {/* Tasks List */}
       <div className="tasks-list-section">
 
-        <div className="tasks-list-header">
-          <h2>
-            {projectFilter
-              ? `${getProjectName(
-                  projectFilter
-                )} Tasks (${
-                  filteredTasks.length
-                })`
-              : "Tasks"}
-          </h2>
-        </div>
-
-
         {!projectFilter ? (
+
           <p className="empty-state">
             Select a project to view its tasks.
           </p>
+
         ) : loading ? (
+
           <p>Loading tasks...</p>
+
         ) : filteredTasks.length === 0 ? (
+
           <p className="empty-state">
             No tasks found for this project.
           </p>
+
         ) : (
+
           <div className="tasks-list">
 
             {filteredTasks.map((task) => (
+
               <div
                 key={task.id}
                 className="task-card"
@@ -820,7 +850,6 @@ function Tasks() {
                     )}
 
                   </div>
-
 
                   <div className="task-badges">
 
@@ -844,7 +873,6 @@ function Tasks() {
 
                 </div>
 
-
                 {/* Task Details */}
                 <div className="task-details">
 
@@ -862,7 +890,6 @@ function Tasks() {
 
                   </div>
 
-
                   <div className="task-detail">
 
                     <span className="detail-label">
@@ -876,7 +903,6 @@ function Tasks() {
                     </span>
 
                   </div>
-
 
                   <div className="task-detail">
 
@@ -893,7 +919,6 @@ function Tasks() {
 
                 </div>
 
-
                 {/* Actions */}
                 <div className="task-actions">
 
@@ -905,7 +930,6 @@ function Tasks() {
                   >
                     Edit
                   </button>
-
 
                   <button
                     className="delete-button"
@@ -919,9 +943,11 @@ function Tasks() {
                 </div>
 
               </div>
+
             ))}
 
           </div>
+
         )}
 
       </div>
