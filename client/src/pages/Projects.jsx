@@ -14,6 +14,8 @@ function Projects() {
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [showProjects, setShowProjects] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -137,6 +139,9 @@ function Projects() {
   };
 
   const editProject = (project) => {
+    // Switch back to the Create/Edit form
+    setShowProjects(false);
+
     setEditingId(project.id);
 
     setFormData({
@@ -237,17 +242,31 @@ function Projects() {
       {/* Page Header */}
       <div className="page-header">
         <h1>Projects</h1>
-        <p>Manage and track your projects.</p>
+        <p>Create and manage projects.</p>
       </div>
 
       {/* Create / Edit Project */}
-      <div className="project-form-section">
+      {!showProjects && (
+        <div className="project-form-section">
 
-        <h2>
-          {editingId
-            ? "Edit Project"
-            : "Create Project"}
-        </h2>
+          <div className="section-header">
+            <h2>
+              {editingId
+                ? "Edit Project"
+                : "Create Project"}
+            </h2>
+
+            <button
+              type="button"
+              className="view-toggle-button"
+              onClick={() => {
+                setShowProjects(true);
+                setEditingId(null);
+              }}
+            >
+              Your Projects →
+            </button>
+          </div>
 
         <form
           onSubmit={handleSubmit}
@@ -378,80 +397,74 @@ function Projects() {
           </button>
 
         </form>
-      </div>
-
-      {/* Your Projects */}
-      <div className="projects-list-section">
-
-        <div className="projects-list-header">
-          <h2>
-            Your Projects ({filteredProjects.length})
-          </h2>
-        </div>
-
-      </div>
-
-      {/* Search and Filter */}
-      <div className="project-controls">
-
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
-        />
-
-        {/* Status */}
-        <div className="filter-group">
-
-          <label>Status:</label>
-
-          <select
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value
-              )
-            }
-          >
-            <option value="All">
-              All
-            </option>
-
-            <option value="Todo">
-              Todo
-            </option>
-
-            <option value="In Progress">
-              In Progress
-            </option>
-
-            <option value="Completed">
-              Completed
-            </option>
-          </select>
 
         </div>
+      )}
 
-      </div>
+      {/* Your Projects / Manage View */}
+      {showProjects && (
+        <div className="projects-manage-view">
 
-      {/* Project List */}
-      <div className="projects-list-section">
+          <div className="section-header">
+            <h2>
+              Your Projects ({filteredProjects.length})
+            </h2>
 
-        {loading ? (
-          <p>Loading projects...</p>
-        ) : filteredProjects.length === 0 ? (
-          <p className="empty-state">
-            No projects found.
-          </p>
-        ) : (
-          <div className="projects-list">
+            <button
+              type="button"
+              className="view-toggle-button"
+              onClick={() => {
+                setShowProjects(false);
+                setEditingId(null);
+              }}
+            >
+              Create Project →
+            </button>
+          </div>
 
-            {filteredProjects.map((project) => (
+          {/* Search and Filter */}
+          <div className="project-controls">
 
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(event) =>
+                setSearchTerm(event.target.value)
+              }
+            />
+
+            <div className="filter-group">
+              <label>Status:</label>
+
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value)
+                }
+              >
+                <option value="All">All</option>
+                <option value="Todo">Todo</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+          </div>
+
+          {/* Project List */}
+          <div className="projects-list-section">
+
+            {loading ? (
+              <p>Loading projects...</p>
+            ) : filteredProjects.length === 0 ? (
+              <p className="empty-state">
+                No projects found.
+              </p>
+            ) : (
+              <div className="projects-list">
+
+                {filteredProjects.map((project) => (
               <div
                 key={project.id}
                 className="project-card"
@@ -568,13 +581,15 @@ function Projects() {
                 </div>
 
               </div>
+                ))}
 
-            ))}
+              </div>
+            )}
 
           </div>
-        )}
 
-      </div>
+        </div>
+      )}
 
     </div>
   );

@@ -1797,3 +1797,33 @@ button:hover {
 .task-project-selector .form-field {
   max-width: 500px;
 }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.view-toggle-button {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.view-toggle-button:hover {
+  text-decoration: underline;
+}
+
+.projects-manage-view,
+.tasks-manage-view {
+  margin-top: 10px;
+}

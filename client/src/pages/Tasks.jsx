@@ -24,6 +24,8 @@ function Tasks() {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showTasks, setShowTasks] = useState(false);
+
   const [formData, setFormData] = useState({
     project_id: "",
     title: "",
@@ -241,6 +243,9 @@ function Tasks() {
   };
 
   const editTask = (task) => {
+    // Switch back to the Create/Edit form
+    setShowTasks(false);
+
     setEditingId(task.id);
 
     setFormData({
@@ -319,72 +324,37 @@ function Tasks() {
         .includes(searchTerm.toLowerCase());
 
     return (
-      statusMatch &&
-      priorityMatch &&
-      searchMatch
-    );
-  });
-
-  const getProjectName = (projectId) => {
-    const project = projects.find(
-      (project) =>
-        String(project.id) ===
-        String(projectId)
-    );
-
-    return project
-      ? project.name
-      : "Unknown Project";
-  };
-
-  const formatDate = (date) => {
-    if (!date) {
-      return "No due date";
-    }
-
-    const dateOnly = date.substring(0, 10);
-
-    const [year, month, day] =
-      dateOnly.split("-");
-
-    return new Date(
-      Number(year),
-      Number(month) - 1,
-      Number(day)
-    ).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  const getStatusClass = (status) => {
-    return `status-badge ${status
-      .toLowerCase()
-      .replace(/\s+/g, "-")}`;
-  };
-
-  const getPriorityClass = (priority) => {
-    return `priority-badge ${priority.toLowerCase()}`;
-  };
-
-  return (
     <div className="tasks-page">
 
       {/* Page Header */}
       <div className="page-header">
         <h1>Tasks</h1>
-        <p>Manage and track your project tasks.</p>
+        <p>Create and manage tasks.</p>
       </div>
 
       {/* Create / Edit Task */}
-      <div className="task-form-section">
+      {!showTasks && (
+        <>
+          <div className="task-form-section">
 
-        <h2>
-          {editingId
-            ? "Edit Task"
-            : "Create Task"}
-        </h2>
+            <div className="section-header">
+              <h2>
+                {editingId
+                  ? "Edit Task"
+                  : "Create Task"}
+              </h2>
+
+              <button
+                type="button"
+                className="view-toggle-button"
+                onClick={() => {
+                  setShowTasks(true);
+                  setEditingId(null);
+                }}
+              >
+                Your Tasks →
+              </button>
+            </div>
 
         <form
           onSubmit={handleSubmit}
@@ -663,7 +633,36 @@ function Tasks() {
 
       </div>
 
-      {/* Select Project to View Existing Tasks */}
+
+        </>
+      )}
+
+      {/* Your Tasks / Manage View */}
+      {showTasks && (
+        <div className="tasks-manage-view">
+
+          <div className="section-header">
+            <h2>
+              {projectFilter
+                ? `Your Tasks — ${getProjectName(
+                    projectFilter
+                  )} (${filteredTasks.length})`
+                : "Your Tasks"}
+            </h2>
+
+            <button
+              type="button"
+              className="view-toggle-button"
+              onClick={() => {
+                setShowTasks(false);
+                setEditingId(null);
+              }}
+            >
+              Create Task →
+            </button>
+          </div>
+
+          {/* Select Project to View Existing Tasks */}
       <div className="task-project-selector">
 
         <div className="projects-list-header">
@@ -699,25 +698,6 @@ function Tasks() {
             ))}
 
           </select>
-
-        </div>
-
-      </div>
-
-      {/* Your Tasks */}
-      <div className="tasks-list-section">
-
-        <div className="tasks-list-header">
-
-          <h2>
-            {projectFilter
-              ? `Your Tasks — ${getProjectName(
-                  projectFilter
-                )} (${
-                  filteredTasks.length
-                })`
-              : "Your Tasks"}
-          </h2>
 
         </div>
 
@@ -951,6 +931,9 @@ function Tasks() {
         )}
 
       </div>
+
+        </div>
+      )}
 
     </div>
   );
