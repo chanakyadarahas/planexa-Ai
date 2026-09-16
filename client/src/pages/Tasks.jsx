@@ -121,7 +121,7 @@ function Tasks() {
       const response = await api.post(
         "/ai/generate-tasks",
         {
-          projectIdea: selectedProject.name,
+          projectName: selectedProject.name,
         }
       );
 
@@ -668,17 +668,13 @@ function Tasks() {
           </div>
 
           {/* Select Project to View Existing Tasks */}
-      <div className="task-project-selector">
+          <div className="task-project-selector">
 
-        <div className="projects-list-header">
-          <h2>Select a Project</h2>
-        </div>
+            <div className="form-field">
 
-        <div className="form-field">
-
-          <label>
-            Select a project to view its existing tasks.
-          </label>
+              <label>
+                Select a project to view its existing tasks.
+              </label>
 
           <select
             value={projectFilter}
