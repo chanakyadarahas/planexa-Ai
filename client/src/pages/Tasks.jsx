@@ -324,7 +324,12 @@ function Tasks() {
         .includes(searchTerm.toLowerCase());
 
     return (
-    <div className="tasks-page">
+      statusMatch && priorityMatch && searchMatch
+    );
+  });
+
+    return (
+      <div className="tasks-page">
 
       {/* Page Header */}
       <div className="page-header">
