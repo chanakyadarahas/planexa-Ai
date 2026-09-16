@@ -137,23 +137,33 @@ function Projects() {
   };
 
   const editProject = (project) => {
-    setEditingId(project.id);
+  setEditingId(project.id);
 
-    setFormData({
-      name: project.name,
-      description: project.description || "",
-      status: project.status,
-      start_date: project.start_date
-        ? project.start_date.substring(0, 10)
-        : "",
-      due_date: project.due_date
-        ? project.due_date.substring(0, 10)
-        : "",
-    });
+  setFormData({
+    name: project.name,
+    description: project.description || "",
+    status: project.status,
+    start_date: project.start_date
+      ? project.start_date.substring(0, 10)
+      : "",
+    due_date: project.due_date
+      ? project.due_date.substring(0, 10)
+      : "",
+  });
 
-    setFormError("");
-    setSuccessMessage("");
-  };
+  setFormError("");
+  setSuccessMessage("");
+
+  // Automatically scroll to the Edit Project form
+  setTimeout(() => {
+    document
+      .querySelector(".project-form-section")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }, 100);
+};
 
   const deleteProject = async (id) => {
     const confirmed = window.confirm(

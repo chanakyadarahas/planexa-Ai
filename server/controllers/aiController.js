@@ -160,7 +160,7 @@ export const generateProjectHealth = async (req, res) => {
       input: `
 You are a project management assistant.
 
-Analyze the following project management statistics and provide a short project health summary.
+Analyze the following project management statistics and provide a short summary of the user's current projects and tasks.
 
 Statistics:
 

@@ -238,24 +238,33 @@ function Tasks() {
   };
 
   const editTask = (task) => {
-    setEditingId(task.id);
+  setEditingId(task.id);
 
-    setFormData({
-      project_id: task.project_id,
-      title: task.title,
-      description: task.description || "",
-      priority: task.priority,
-      status: task.status,
-      due_date: task.due_date
-        ? task.due_date.substring(0, 10)
-        : "",
-      assignee: task.assignee || "",
-    });
+  setFormData({
+    project_id: task.project_id,
+    title: task.title,
+    description: task.description || "",
+    priority: task.priority,
+    status: task.status,
+    due_date: task.due_date
+      ? task.due_date.substring(0, 10)
+      : "",
+    assignee: task.assignee || "",
+  });
 
-    setFormError("");
-    setSuccessMessage("");
-  };
+  setFormError("");
+  setSuccessMessage("");
 
+  // Automatically scroll to the Edit Task form
+  setTimeout(() => {
+    document
+      .querySelector(".task-form-section")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }, 100);
+};
   const deleteTask = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this task?"

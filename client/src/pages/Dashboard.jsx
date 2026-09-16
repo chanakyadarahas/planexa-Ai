@@ -190,9 +190,8 @@ function Dashboard() {
         </div>
 
         <p>
-          Welcome back, 👋
-          &nbsp; Here's an overview of your
-          projects and tasks.
+           Welcome back, <strong>{stats.username}</strong> 👋
+           &nbsp; Here's an overview of your projects and tasks.
         </p>
 
       </div>
@@ -568,8 +567,8 @@ function Dashboard() {
 
             <p>
               Get an AI-generated summary
-              of your current project and
-              task health.
+              of your current projects and
+              tasks health.
             </p>
 
           </div>
