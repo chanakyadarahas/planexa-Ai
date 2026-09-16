@@ -136,3 +136,66 @@ Keep the description concise and practical.
     });
   }
 };
+
+// ========================================
+// Generate Project Health Summary
+// ========================================
+
+export const generateProjectHealth = async (req, res) => {
+  try {
+    const {
+      total_projects,
+      total_tasks,
+      completed_tasks,
+      todo_tasks,
+      in_progress_tasks,
+      overdue_tasks,
+      completed_projects,
+      todo_projects,
+      in_progress_projects,
+    } = req.body;
+
+    const response = await openai.responses.create({
+      model: "gpt-5-mini",
+      input: `
+You are a project management assistant.
+
+Analyze the following project management statistics and provide a short project health summary.
+
+Statistics:
+
+Total projects: ${total_projects}
+Completed projects: ${completed_projects}
+Todo projects: ${todo_projects}
+Projects in progress: ${in_progress_projects}
+
+Total tasks: ${total_tasks}
+Completed tasks: ${completed_tasks}
+Todo tasks: ${todo_tasks}
+Tasks in progress: ${in_progress_tasks}
+Overdue tasks: ${overdue_tasks}
+
+Return a concise summary in 4 to 5 sentences.
+
+Mention:
+- Overall project progress
+- Task completion
+- Overdue tasks if there are any
+- One practical recommendation and any suggestion relevant to improving project health
+
+Do not use bullet points.
+Do not provide a title.
+`,
+    });
+
+    res.json({
+      summary: response.output_text,
+    });
+  } catch (error) {
+    console.error("OpenAI error:", error.message);
+
+    res.status(500).json({
+      error: "Failed to generate project health summary",
+    });
+  }
+};

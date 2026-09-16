@@ -4,7 +4,7 @@ Planexa AI is a full-stack AI-powered project management application that helps 
 
 ## Live Demo
 
-https://planexa-ai-frontend.onrender.com
+https://planexaai.com
 
 ## GitHub Repository
 

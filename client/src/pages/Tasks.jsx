@@ -9,51 +9,44 @@ function Tasks() {
   const [aiTasks, setAiTasks] = useState("");
   const [aiTaskLoading, setAiTaskLoading] = useState(false);
   const [aiTaskError, setAiTaskError] = useState("");
-  const [aiDescriptionLoading, setAiDescriptionLoading] = useState(false);
-  const [aiDescriptionError, setAiDescriptionError] = useState("");
+
+  const [aiDescriptionLoading, setAiDescriptionLoading] =
+    useState(false);
+  const [aiDescriptionError, setAiDescriptionError] =
+    useState("");
 
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
-  const [projectFilter, setProjectFilter] = useState("All");
+  const [projectFilter, setProjectFilter] = useState("");
 
   const [formError, setFormError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     project_id: "",
     title: "",
     description: "",
     priority: "Medium",
-    status: "Pending",
+    status: "Todo",
     due_date: "",
     assignee: "",
   });
 
+  // Load projects when page opens
   useEffect(() => {
-    fetchTasks();
     fetchProjects();
   }, []);
 
-  const fetchTasks = async () => {
-    try {
-      setLoading(true);
-
-      const response = await api.get("/tasks");
-
-      setTasks(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-
-      setFormError(
-        error.response?.data?.error ||
-          "Failed to load tasks. Please try again."
-      );
-    } finally {
-      setLoading(false);
+  // Load tasks whenever the selected project changes
+  useEffect(() => {
+    if (projectFilter) {
+      fetchTasks(projectFilter);
+    } else {
+      setTasks([]);
     }
-  };
+  }, [projectFilter]);
 
   const fetchProjects = async () => {
     try {
@@ -62,6 +55,35 @@ function Tasks() {
       setProjects(response.data);
     } catch (error) {
       console.error("Error fetching projects:", error);
+
+      setFormError(
+        error.response?.data?.error ||
+          "Failed to load projects."
+      );
+    }
+  };
+
+  const fetchTasks = async (projectId) => {
+    try {
+      setLoading(true);
+      setFormError("");
+
+      const response = await api.get(
+        `/tasks?project_id=${projectId}`
+      );
+
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+
+      setFormError(
+        error.response?.data?.error ||
+          "Failed to load tasks."
+      );
+
+      setTasks([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,93 +95,95 @@ function Tasks() {
   };
 
   const generateAiTasks = async () => {
-  if (!formData.project_id) {
-    setAiTaskError("Please select a project first.");
-    return;
-  }
+    if (!formData.project_id) {
+      setAiTaskError("Please select a project first.");
+      return;
+    }
 
-  const selectedProject = projects.find(
-    (project) =>
-      String(project.id) === String(formData.project_id)
-  );
-
-  if (!selectedProject) {
-    setAiTaskError("Selected project was not found.");
-    return;
-  }
-
-  try {
-    setAiTaskLoading(true);
-    setAiTaskError("");
-    setAiTasks("");
-
-    const response = await api.post(
-      "/ai/generate-tasks",
-      {
-        projectName: selectedProject.name,
-      }
+    const selectedProject = projects.find(
+      (project) =>
+        String(project.id) ===
+        String(formData.project_id)
     );
 
-    setAiTasks(response.data.tasks);
-  } catch (error) {
-    console.error("Error generating AI tasks:", error);
+    if (!selectedProject) {
+      setAiTaskError("Selected project was not found.");
+      return;
+    }
 
-    setAiTaskError(
-      error.response?.data?.error ||
-        "Failed to generate tasks. Please try again."
-    );
-  } finally {
-    setAiTaskLoading(false);
-  }
-};
+    try {
+      setAiTaskLoading(true);
+      setAiTaskError("");
+      setAiTasks("");
 
-const generateAiTaskDescription = async () => {
-  if (!formData.title.trim()) {
-    setAiDescriptionError("Please enter a task title first.");
-    return;
-  }
+      const response = await api.post(
+        "/ai/generate-tasks",
+        {
+          projectIdea: selectedProject.name,
+        }
+      );
 
-  try {
-    setAiDescriptionLoading(true);
-    setAiDescriptionError("");
+      setAiTasks(response.data.tasks);
+    } catch (error) {
+      console.error("Error generating AI tasks:", error);
 
-    const response = await api.post(
-      "/ai/generate-task-description",
-      {
-        taskName: formData.title,
-      }
-    );
+      setAiTaskError(
+        error.response?.data?.error ||
+          "Failed to generate tasks. Please try again."
+      );
+    } finally {
+      setAiTaskLoading(false);
+    }
+  };
 
-    setFormData({
-      ...formData,
-      description: response.data.description,
-    });
-  } catch (error) {
-    console.error(
-      "Error generating task description:",
-      error
-    );
+  const generateAiTaskDescription = async () => {
+    if (!formData.title.trim()) {
+      setAiDescriptionError(
+        "Please enter a task title first."
+      );
+      return;
+    }
 
-    setAiDescriptionError(
-      error.response?.data?.error ||
-        "Failed to generate task description. Please try again."
-    );
-  } finally {
-    setAiDescriptionLoading(false);
-  }
-};
+    try {
+      setAiDescriptionLoading(true);
+      setAiDescriptionError("");
 
+      const response = await api.post(
+        "/ai/generate-task-description",
+        {
+          taskName: formData.title,
+        }
+      );
+
+      setFormData({
+        ...formData,
+        description: response.data.description,
+      });
+    } catch (error) {
+      console.error(
+        "Error generating task description:",
+        error
+      );
+
+      setAiDescriptionError(
+        error.response?.data?.error ||
+          "Failed to generate task description."
+      );
+    } finally {
+      setAiDescriptionLoading(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!formData.project_id) {
-      setFormError("Please select a project");
+      setFormError("Please select a project.");
       return;
     }
 
     if (!formData.title.trim()) {
-      setFormError("Task title is required");
+      setFormError("Task title is required.");
       return;
     }
 
@@ -167,31 +191,42 @@ const generateAiTaskDescription = async () => {
     setSuccessMessage("");
 
     try {
+      const selectedProjectId = formData.project_id;
+
       if (editingId) {
-        await api.put(`/tasks/${editingId}`, formData);
+        await api.put(
+          `/tasks/${editingId}`,
+          formData
+        );
+
+        setSuccessMessage(
+          "Task updated successfully."
+        );
       } else {
         await api.post("/tasks", formData);
+
+        setSuccessMessage(
+          "Task created successfully."
+        );
       }
 
-      setSuccessMessage(
-        editingId
-          ? "Task updated successfully"
-          : "Task created successfully"
-      );
-
       setFormData({
-        project_id: "",
+        project_id: selectedProjectId,
         title: "",
         description: "",
         priority: "Medium",
-        status: "Pending",
+        status: "Todo",
         due_date: "",
         assignee: "",
       });
 
       setEditingId(null);
 
-      fetchTasks();
+      // Keep showing the same project after saving
+      setProjectFilter(selectedProjectId);
+
+      // Refresh that project's tasks
+      await fetchTasks(selectedProjectId);
     } catch (error) {
       console.error("Error saving task:", error);
 
@@ -233,13 +268,19 @@ const generateAiTaskDescription = async () => {
     try {
       await api.delete(`/tasks/${id}`);
 
-      fetchTasks();
+      if (projectFilter) {
+        await fetchTasks(projectFilter);
+      }
+
+      setSuccessMessage(
+        "Task deleted successfully."
+      );
     } catch (error) {
       console.error("Error deleting task:", error);
 
       setFormError(
         error.response?.data?.error ||
-          "Failed to delete task. Please try again."
+          "Failed to delete task."
       );
     }
   };
@@ -253,13 +294,9 @@ const generateAiTaskDescription = async () => {
       priorityFilter === "All" ||
       task.priority === priorityFilter;
 
-    const projectMatch =
-      projectFilter === "All" ||
-      String(task.project_id) === String(projectFilter);
-
     const searchMatch =
       task.title
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       task.description
         ?.toLowerCase()
@@ -271,17 +308,20 @@ const generateAiTaskDescription = async () => {
     return (
       statusMatch &&
       priorityMatch &&
-      projectMatch &&
       searchMatch
     );
   });
 
   const getProjectName = (projectId) => {
     const project = projects.find(
-      (project) => String(project.id) === String(projectId)
+      (project) =>
+        String(project.id) ===
+        String(projectId)
     );
 
-    return project ? project.name : "Unknown Project";
+    return project
+      ? project.name
+      : "Unknown Project";
   };
 
   const formatDate = (date) => {
@@ -291,7 +331,8 @@ const generateAiTaskDescription = async () => {
 
     const dateOnly = date.substring(0, 10);
 
-    const [year, month, day] = dateOnly.split("-");
+    const [year, month, day] =
+      dateOnly.split("-");
 
     return new Date(
       Number(year),
@@ -307,7 +348,7 @@ const generateAiTaskDescription = async () => {
   const getStatusClass = (status) => {
     return `status-badge ${status
       .toLowerCase()
-      .replace(" ", "-")}`;
+      .replace(/\s+/g, "-")}`;
   };
 
   const getPriorityClass = (priority) => {
@@ -323,141 +364,17 @@ const generateAiTaskDescription = async () => {
         <p>Manage and track your project tasks.</p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="task-controls">
 
-        <input
-          type="text"
-          placeholder="Search tasks..."
-          value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
-        />
+      {/* =====================================
+          CREATE / EDIT TASK
+      ===================================== */}
 
-        <div className="filter-group">
-          <label>Status:</label>
-
-          <select
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(event.target.value)
-            }
-          >
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Priority:</label>
-
-          <select
-            value={priorityFilter}
-            onChange={(event) =>
-              setPriorityFilter(event.target.value)
-            }
-          >
-            <option value="All">All</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Project:</label>
-
-          <select
-            value={projectFilter}
-            onChange={(event) =>
-              setProjectFilter(event.target.value)
-            }
-          >
-            <option value="All">All</option>
-
-            {projects.map((project) => (
-              <option
-                key={project.id}
-                value={project.id}
-              >
-                {project.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-      </div>
-
-      {/* AI Task Generator */}
-        <div className="ai-task-section">
-          <div className="page-header">
-            <h2>AI Task Generator</h2>
-            <p>
-              Select a project and let AI suggest practical development tasks.
-            </p>
-          </div>
-
-          <div className="ai-task-form">
-
-            <div className="form-field">
-              <label>Project</label>
-
-              <select
-                value={formData.project_id}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    project_id: event.target.value,
-                  })
-                }
-              >
-                <option value="">Select Project</option>
-
-                {projects.map((project) => (
-                  <option
-                    key={project.id}
-                    value={project.id}
-                  >
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {aiTaskError && (
-              <p className="form-error">
-                {aiTaskError}
-              </p>
-            )}
-
-            <button
-              type="button"
-              className="ai-button"
-              onClick={generateAiTasks}
-              disabled={aiTaskLoading}
-            >
-              {aiTaskLoading
-                ? "Generating..."
-                : "Generate Tasks with AI"}
-            </button>
-          </div>
-
-          {aiTasks && (
-            <div className="ai-results">
-              <h3>AI Suggested Tasks</h3>
-              <pre>{aiTasks}</pre>
-            </div>
-          )}
-        </div>
-
-      {/* Create / Edit Task */}
       <div className="task-form-section">
 
         <h2>
-          {editingId ? "Edit Task" : "Create Task"}
+          {editingId
+            ? "Edit Task"
+            : "Create Task"}
         </h2>
 
         <form
@@ -491,6 +408,7 @@ const generateAiTaskDescription = async () => {
             </select>
           </div>
 
+
           {/* Task Title */}
           <div className="form-field">
             <label>
@@ -505,6 +423,7 @@ const generateAiTaskDescription = async () => {
             />
           </div>
 
+
           {/* Status */}
           <div className="form-field">
             <label>
@@ -516,8 +435,8 @@ const generateAiTaskDescription = async () => {
               value={formData.status}
               onChange={handleChange}
             >
-              <option value="Pending">
-                Pending
+              <option value="Todo">
+                Todo
               </option>
 
               <option value="In Progress">
@@ -529,6 +448,7 @@ const generateAiTaskDescription = async () => {
               </option>
             </select>
           </div>
+
 
           {/* Description */}
           <div className="form-field description-field">
@@ -545,8 +465,12 @@ const generateAiTaskDescription = async () => {
             <button
               type="button"
               className="ai-description-button"
-              onClick={generateAiTaskDescription}
-              disabled={aiDescriptionLoading}
+              onClick={
+                generateAiTaskDescription
+              }
+              disabled={
+                aiDescriptionLoading
+              }
             >
               {aiDescriptionLoading
                 ? "Generating..."
@@ -560,6 +484,7 @@ const generateAiTaskDescription = async () => {
             )}
           </div>
 
+
           {/* Priority */}
           <div className="form-field">
             <label>
@@ -571,11 +496,20 @@ const generateAiTaskDescription = async () => {
               value={formData.priority}
               onChange={handleChange}
             >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
+              <option value="Low">
+                Low
+              </option>
+
+              <option value="Medium">
+                Medium
+              </option>
+
+              <option value="High">
+                High
+              </option>
             </select>
           </div>
+
 
           {/* Due Date */}
           <div className="form-field">
@@ -591,6 +525,7 @@ const generateAiTaskDescription = async () => {
             />
           </div>
 
+
           {/* Assignee */}
           <div className="form-field">
             <label>
@@ -605,6 +540,7 @@ const generateAiTaskDescription = async () => {
             />
           </div>
 
+
           {/* Error */}
           {formError && (
             <p className="form-error">
@@ -612,12 +548,14 @@ const generateAiTaskDescription = async () => {
             </p>
           )}
 
+
           {/* Success */}
           {successMessage && (
             <p className="success-message">
               {successMessage}
             </p>
           )}
+
 
           {/* Submit */}
           <button
@@ -630,22 +568,225 @@ const generateAiTaskDescription = async () => {
           </button>
 
         </form>
+
       </div>
 
-      {/* Tasks List */}
+
+      {/* =====================================
+          AI TASK GENERATOR
+      ===================================== */}
+
+      <div className="ai-task-section">
+
+        <div className="page-header">
+          <h2>AI Task Generator</h2>
+
+          <p>
+            Select a project and let AI suggest
+            practical development tasks.
+          </p>
+        </div>
+
+
+        <div className="ai-task-form">
+
+          <div className="form-field">
+            <label>Project</label>
+
+            <select
+              value={formData.project_id}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  project_id:
+                    event.target.value,
+                })
+              }
+            >
+              <option value="">
+                Select Project
+              </option>
+
+              {projects.map((project) => (
+                <option
+                  key={project.id}
+                  value={project.id}
+                >
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
+          {aiTaskError && (
+            <p className="form-error">
+              {aiTaskError}
+            </p>
+          )}
+
+
+          <button
+            type="button"
+            className="ai-button"
+            onClick={generateAiTasks}
+            disabled={aiTaskLoading}
+          >
+            {aiTaskLoading
+              ? "Generating..."
+              : "Generate Tasks with AI"}
+          </button>
+
+        </div>
+
+
+        {aiTasks && (
+          <div className="ai-results">
+            <h3>AI Suggested Tasks</h3>
+            <pre>{aiTasks}</pre>
+          </div>
+        )}
+
+      </div>
+
+
+      {/* =====================================
+          SEARCH AND FILTERS
+      ===================================== */}
+
+      <div className="task-controls">
+
+        {/* Project FIRST */}
+        <div className="filter-group">
+          <label>Project:</label>
+
+          <select
+            value={projectFilter}
+            onChange={(event) =>
+              setProjectFilter(
+                event.target.value
+              )
+            }
+          >
+            <option value="">
+              Select Project
+            </option>
+
+            {projects.map((project) => (
+              <option
+                key={project.id}
+                value={project.id}
+              >
+                {project.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+
+        {/* Search SECOND */}
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchTerm}
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
+        />
+
+
+        {/* Status THIRD */}
+        <div className="filter-group">
+          <label>Status:</label>
+
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(
+                event.target.value
+              )
+            }
+          >
+            <option value="All">
+              All
+            </option>
+
+            <option value="Todo">
+              Todo
+            </option>
+
+            <option value="In Progress">
+              In Progress
+            </option>
+
+            <option value="Completed">
+              Completed
+            </option>
+          </select>
+        </div>
+
+
+        {/* Priority FOURTH */}
+        <div className="filter-group">
+          <label>Priority:</label>
+
+          <select
+            value={priorityFilter}
+            onChange={(event) =>
+              setPriorityFilter(
+                event.target.value
+              )
+            }
+          >
+            <option value="All">
+              All
+            </option>
+
+            <option value="Low">
+              Low
+            </option>
+
+            <option value="Medium">
+              Medium
+            </option>
+
+            <option value="High">
+              High
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+
+      {/* =====================================
+          TASKS LIST
+      ===================================== */}
+
       <div className="tasks-list-section">
 
         <div className="tasks-list-header">
           <h2>
-            All Tasks ({filteredTasks.length})
+            {projectFilter
+              ? `${getProjectName(
+                  projectFilter
+                )} Tasks (${
+                  filteredTasks.length
+                })`
+              : "Tasks"}
           </h2>
         </div>
 
-        {loading ? (
+
+        {!projectFilter ? (
+          <p className="empty-state">
+            Select a project to view its tasks.
+          </p>
+        ) : loading ? (
           <p>Loading tasks...</p>
         ) : filteredTasks.length === 0 ? (
           <p className="empty-state">
-            No tasks found.
+            No tasks found for this project.
           </p>
         ) : (
           <div className="tasks-list">
@@ -656,10 +797,11 @@ const generateAiTaskDescription = async () => {
                 className="task-card"
               >
 
-                {/* Card Header */}
+                {/* Task Header */}
                 <div className="task-card-header">
 
                   <div>
+
                     <h3>{task.title}</h3>
 
                     {task.description && (
@@ -667,9 +809,12 @@ const generateAiTaskDescription = async () => {
                         {task.description}
                       </p>
                     )}
+
                   </div>
 
+
                   <div className="task-badges">
+
                     <span
                       className={getStatusClass(
                         task.status
@@ -685,14 +830,17 @@ const generateAiTaskDescription = async () => {
                     >
                       {task.priority}
                     </span>
+
                   </div>
 
                 </div>
+
 
                 {/* Task Details */}
                 <div className="task-details">
 
                   <div className="task-detail">
+
                     <span className="detail-label">
                       Project
                     </span>
@@ -702,19 +850,27 @@ const generateAiTaskDescription = async () => {
                         task.project_id
                       )}
                     </span>
+
                   </div>
 
+
                   <div className="task-detail">
+
                     <span className="detail-label">
                       Due Date
                     </span>
 
                     <span className="detail-value">
-                      {formatDate(task.due_date)}
+                      {formatDate(
+                        task.due_date
+                      )}
                     </span>
+
                   </div>
 
+
                   <div className="task-detail">
+
                     <span className="detail-label">
                       Assignee
                     </span>
@@ -723,9 +879,11 @@ const generateAiTaskDescription = async () => {
                       {task.assignee ||
                         "Not assigned"}
                     </span>
+
                   </div>
 
                 </div>
+
 
                 {/* Actions */}
                 <div className="task-actions">
@@ -738,6 +896,7 @@ const generateAiTaskDescription = async () => {
                   >
                     Edit
                   </button>
+
 
                   <button
                     className="delete-button"

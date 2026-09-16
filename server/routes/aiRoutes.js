@@ -4,12 +4,12 @@ import {
   generateProjectDescription,
   generateTasks,
   generateTaskDescription,
+  generateProjectHealth,
 } from "../controllers/aiController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
-
 
 // Project description
 router.post(
@@ -18,14 +18,12 @@ router.post(
   generateProjectDescription
 );
 
-
 // Task generator
 router.post(
   "/generate-tasks",
   authMiddleware,
   generateTasks
 );
-
 
 // Task description
 router.post(
@@ -34,5 +32,11 @@ router.post(
   generateTaskDescription
 );
 
+// Project health summary
+router.post(
+  "/project-health",
+  authMiddleware,
+  generateProjectHealth
+);
 
 export default router;

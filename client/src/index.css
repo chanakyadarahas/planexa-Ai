@@ -349,7 +349,7 @@ button:hover {
   font-weight: 600;
 }
 
-.pending {
+.Todo {
   background-color: #fef3c7;
   color: #92400e;
 }
@@ -1264,91 +1264,75 @@ button:hover {
 .project-form-section .ai-description-button::before {
   content: "✦ ";
 }
-
-/* =========================
+/* =========================================
    DASHBOARD
-========================= */
+========================================= */
 
 .dashboard-page {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1460px;
   margin: 0 auto;
+  padding: 35px 38px 40px;
+  box-sizing: border-box;
 }
 
-/* Header */
+
+/* =========================================
+   DASHBOARD HEADER
+========================================= */
 
 .dashboard-header {
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .dashboard-title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .dashboard-title-row h1 {
   margin: 0;
-  font-size: 30px;
+  font-size: 44px;
   font-weight: 700;
-  letter-spacing: -0.6px;
-  color: #111827;
+  color: #101b38;
+  letter-spacing: -1px;
 }
 
 .dashboard-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: #eef2ff;
-  color: #4f46e5;
-  font-size: 18px;
+  font-size: 28px;
+  color: #4a4ff5;
 }
 
 .dashboard-header p {
-  margin: 8px 0 0 44px;
-  color: #6b7280;
-  font-size: 14px;
+  margin: 10px 0 0;
+  font-size: 20px;
+  color: #263758;
 }
 
-/* Statistics */
+
+/* =========================================
+   STATISTICS CARDS
+========================================= */
 
 .dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
   margin-bottom: 28px;
 }
 
-/* Stat card */
-
 .stat-card {
   position: relative;
-  padding: 22px;
+  min-height: 154px;
+  padding: 24px 22px;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dfe6f2;
+  border-top: 3px solid #4c51f5;
   border-radius: 11px;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 12px rgba(36, 53, 84, 0.05);
+  box-sizing: border-box;
 }
-
-.stat-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 3px;
-  background: #4f46e5;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
-}
-
-/* Stat top row */
 
 .stat-card-top {
   display: flex;
@@ -1358,174 +1342,447 @@ button:hover {
 }
 
 .stat-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.35px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #263758;
+  letter-spacing: 0.2px;
 }
 
 .stat-icon {
-  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: #eef2ff;
-  color: #4f46e5;
-  font-size: 13px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: #eef1ff;
+  color: #355ef5;
+  font-size: 20px;
   font-weight: 700;
 }
 
-/* Number */
-
 .stat-number {
-  margin: 18px 0 5px;
-  font-size: 32px;
+  margin: 12px 0 4px;
+  font-size: 42px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: -1px;
-  color: #111827;
+  color: #101b38;
 }
 
 .stat-description {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #9ca3af;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #506486;
 }
 
-/* Overdue */
 
-.overdue-card::before {
-  background: #dc2626;
+/* Green completed card */
+
+.stat-completed {
+  border-top-color: #13b77b;
+}
+
+.stat-completed .stat-icon {
+  background: #e4f8f1;
+  color: #0ba56e;
+}
+
+
+/* Orange todo card */
+
+.stat-todo {
+  border-top-color: #4c51f5;
+}
+
+.stat-todo .stat-icon {
+  background: #fff1e3;
+  color: #ff8d00;
+}
+
+
+/* Blue progress card */
+
+.stat-progress {
+  border-top-color: #3e6ff5;
+}
+
+.stat-progress .stat-icon {
+  background: #eaf0ff;
+  color: #3e6ff5;
+}
+
+
+/* Red overdue card */
+
+.overdue-card {
+  border-top-color: #ef3d3d;
 }
 
 .overdue-card .stat-icon {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #fde8e9;
+  color: #ef3d3d;
 }
 
-/* Welcome panel */
 
-.dashboard-welcome {
-  position: relative;
+/* =========================================
+   STATUS SECTIONS
+========================================= */
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 25px;
+}
+
+.dashboard-chart-card {
+  padding: 28px 31px 30px;
+  background: #ffffff;
+  border: 1px solid #dfe6f2;
+  border-radius: 11px;
+  box-shadow: 0 3px 12px rgba(36, 53, 84, 0.04);
+}
+
+.dashboard-chart-card h2 {
+  margin: 0 0 26px;
+  font-size: 29px;
+  font-weight: 700;
+  color: #101b38;
+}
+
+
+/* =========================================
+   CHART ROWS
+========================================= */
+
+.chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.chart-row {
+  width: 100%;
+}
+
+.chart-row-label {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 190px;
-  padding: 32px 36px;
-  margin-top: 8px;
-  background: #111827;
-  border-radius: 12px;
-  overflow: hidden;
+  margin-bottom: 9px;
+  font-size: 18px;
+  color: #15213e;
 }
 
-.dashboard-welcome::after {
-  content: "";
-  position: absolute;
-  width: 220px;
-  height: 220px;
-  right: -70px;
-  top: -80px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-}
-
-.welcome-label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 11px;
+.chart-row-label strong {
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  color: #a5b4fc;
+  color: #101b38;
 }
 
-.dashboard-welcome h2 {
-  margin: 0 0 9px;
-  color: white;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.4px;
+
+/* =========================================
+   PROGRESS TRACKS
+========================================= */
+
+.chart-track {
+  width: 100%;
+  height: 15px;
+  overflow: hidden;
+  background: #e9eef5;
+  border-radius: 999px;
 }
 
-.dashboard-welcome p {
-  max-width: 600px;
-  margin: 0;
-  color: #9ca3af;
-  font-size: 14px;
-  line-height: 1.7;
+.chart-bar {
+  height: 100%;
+  min-width: 0;
+  border-radius: 999px;
+  transition: width 0.4s ease;
 }
 
-.welcome-symbol {
+
+/* Completed */
+
+.completed-bar {
+  background: #12b879;
+}
+
+
+/* Todo */
+
+.todo-bar {
+  background: #ff9d18;
+}
+
+
+/* In Progress */
+
+.progress-bar {
+  background: #3d70f5;
+}
+
+
+/* =========================================
+   AI PROJECT HEALTH
+========================================= */
+
+.dashboard-ai-card {
   position: relative;
-  z-index: 1;
+  min-height: 122px;
+  padding: 25px 29px;
+  background: #ffffff;
+  border: 1px solid #dfe6f2;
+  border-radius: 11px;
+  box-shadow: 0 3px 12px rgba(36, 53, 84, 0.04);
+  box-sizing: border-box;
+}
+
+.dashboard-ai-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.dashboard-ai-icon {
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 75px;
-  height: 75px;
-  margin-right: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  color: #a5b4fc;
-  font-size: 32px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #eef0ff;
+  color: #4b4df5;
+  font-size: 25px;
+  font-weight: 700;
 }
 
-/* Loading */
+.dashboard-ai-content h2 {
+  margin: 5px 0 3px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #101b38;
+}
+
+.dashboard-ai-content p {
+  margin: 0;
+  font-size: 17px;
+  color: #506486;
+}
+
+
+/* =========================================
+   AI BUTTON
+========================================= */
+
+.ai-health-button {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+
+  min-width: 260px;
+  height: 55px;
+  padding: 0 25px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #4545ed;
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 10px rgba(69, 69, 237, 0.2);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ai-health-button:hover {
+  background: #3737d9;
+  transform: translateY(-1px);
+}
+
+.ai-health-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* =========================================
+   AI RESULT
+========================================= */
+
+.ai-health-result {
+  margin-top: 24px;
+  margin-right: 290px;
+  padding: 17px 20px;
+  background: #f4f6ff;
+  border: 1px solid #dfe3ff;
+  border-radius: 8px;
+  color: #263758;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.ai-health-error {
+  margin-top: 24px;
+  margin-right: 290px;
+  padding: 14px 18px;
+  background: #fff1f1;
+  border: 1px solid #ffd1d1;
+  border-radius: 8px;
+  color: #b33a3a;
+  font-size: 15px;
+}
+
+
+/* =========================================
+   FOOTER / BRANDING
+========================================= */
+
+.dashboard-branding {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 23px;
+  padding-right: 5px;
+
+  font-size: 16px;
+  color: #506486;
+}
+
+.dashboard-branding strong {
+  color: #506486;
+  font-weight: 700;
+}
+
+.dashboard-branding span {
+  color: #506486;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
 
 .dashboard-loading {
-  padding: 70px 20px;
+  padding: 60px 20px;
   text-align: center;
 }
 
 .dashboard-loading h2 {
   margin-bottom: 8px;
-  color: #111827;
+  color: #101b38;
 }
 
 .dashboard-loading p {
   margin: 0;
-  color: #9ca3af;
+  color: #506486;
 }
 
-@media (max-width: 1100px) {
-  .dashboard-stats { grid-template-columns: repeat(3, 1fr);
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+  .dashboard-stats {
+    grid-template-columns: repeat(3, 1fr);
   }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+
 }
+
 
 @media (max-width: 768px) {
-  .dashboard-stats { grid-template-columns: repeat(2, 1fr);
-  } .dashboard-welcome { padding: 26px;
-  } .welcome-symbol { display: none;
-  } .dashboard-header p { margin-left: 0;
+
+  .dashboard-page {
+    padding: 25px 20px 35px;
   }
-}
 
-@media (max-width: 480px) {
-  .dashboard-stats { grid-template-columns: 1fr;
-  } .dashboard-title-row h1 { font-size: 26px;
-  } .dashboard-welcome h2 { font-size: 21px;
+  .dashboard-title-row h1 {
+    font-size: 36px;
   }
+
+  .dashboard-header p {
+    font-size: 17px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-chart-card {
+    padding: 24px;
+  }
+
+  .dashboard-chart-card h2 {
+    font-size: 26px;
+  }
+
+  .ai-health-button {
+    position: static;
+    width: 100%;
+    margin-top: 22px;
+  }
+
+  .ai-health-result,
+  .ai-health-error {
+    margin-right: 0;
+  }
+
 }
 
-.auth-brand {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  text-align: center;
-  color: #DB2777;
-}
 
-.auth-card h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  text-align: center;
+@media (max-width: 500px) {
 
-}
+  .dashboard-page {
+    padding: 20px 14px 30px;
+  }
 
-.auth-card > p {
-  margin-top: 0;
+  .dashboard-title-row h1 {
+    font-size: 31px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    min-height: 145px;
+  }
+
+  .dashboard-chart-card {
+    padding: 21px;
+  }
+
+  .dashboard-ai-card {
+    padding: 21px;
+  }
+
+  .dashboard-ai-content h2 {
+    font-size: 23px;
+  }
+
+  .dashboard-ai-content p {
+    font-size: 15px;
+  }
+
+  .dashboard-branding {
+    justify-content: center;
+    font-size: 14px;
+  }
+
 }

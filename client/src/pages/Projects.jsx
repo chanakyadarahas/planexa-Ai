@@ -17,7 +17,7 @@ function Projects() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    status: "Pending",
+    status: "Todo",
     start_date: "",
     due_date: "",
   });
@@ -52,42 +52,41 @@ function Projects() {
     });
   };
 
-
   const generateProjectDescription = async () => {
-  if (!formData.name.trim()) {
-    setAiError("Please enter a project name first.");
-    return;
-  }
+    if (!formData.name.trim()) {
+      setAiError("Please enter a project name first.");
+      return;
+    }
 
-  try {
-    setAiLoading(true);
-    setAiError("");
+    try {
+      setAiLoading(true);
+      setAiError("");
 
-    const response = await api.post(
-      "/ai/generate-description",
-      {
-        projectName: formData.name,
-      }
-    );
+      const response = await api.post(
+        "/ai/generate-description",
+        {
+          projectName: formData.name,
+        }
+      );
 
-    setFormData({
-      ...formData,
-      description: response.data.description,
-    });
-  } catch (error) {
-    console.error(
-      "Error generating project description:",
-      error
-    );
+      setFormData({
+        ...formData,
+        description: response.data.description,
+      });
+    } catch (error) {
+      console.error(
+        "Error generating project description:",
+        error
+      );
 
-    setAiError(
-      error.response?.data?.error ||
-        "Failed to generate project description."
-    );
-  } finally {
-    setAiLoading(false);
-  }
-};
+      setAiError(
+        error.response?.data?.error ||
+          "Failed to generate project description."
+      );
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -102,7 +101,10 @@ function Projects() {
 
     try {
       if (editingId) {
-        await api.put(`/projects/${editingId}`, formData);
+        await api.put(
+          `/projects/${editingId}`,
+          formData
+        );
       } else {
         await api.post("/projects", formData);
       }
@@ -116,7 +118,7 @@ function Projects() {
       setFormData({
         name: "",
         description: "",
-        status: "Pending",
+        status: "Todo",
         start_date: "",
         due_date: "",
       });
@@ -199,7 +201,8 @@ function Projects() {
 
     const dateOnly = date.substring(0, 10);
 
-    const [year, month, day] = dateOnly.split("-");
+    const [year, month, day] =
+      dateOnly.split("-");
 
     return new Date(
       Number(year),
@@ -215,7 +218,7 @@ function Projects() {
   const getStatusClass = (status) => {
     return `status-badge ${status
       .toLowerCase()
-      .replace(" ", "-")}`;
+      .replace(/\s+/g, "-")}`;
   };
 
   return (
@@ -226,37 +229,6 @@ function Projects() {
         <h1>Projects</h1>
         <p>Manage and track your projects.</p>
       </div>
-
-      {/* Search and Filter */}
-      <div className="project-controls">
-
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
-        />
-
-        <div className="filter-group">
-          <label>Status:</label>
-
-          <select
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(event.target.value)
-            }
-          >
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
-
-      </div>
-
 
       {/* Create / Edit Project */}
       <div className="project-form-section">
@@ -297,8 +269,8 @@ function Projects() {
               value={formData.status}
               onChange={handleChange}
             >
-              <option value="Pending">
-                Pending
+              <option value="Todo">
+                Todo
               </option>
 
               <option value="In Progress">
@@ -312,7 +284,7 @@ function Projects() {
           </div>
 
           {/* Description */}
-           <div className="form-field description-field">
+          <div className="form-field description-field">
             <label>Description</label>
 
             <textarea
@@ -335,15 +307,15 @@ function Projects() {
             </button>
 
             {aiError && (
-              <p className="form-error">{aiError}</p>
+              <p className="form-error">
+                {aiError}
+              </p>
             )}
           </div>
 
           {/* Start Date */}
           <div className="form-field">
-            <label>
-              Start Date
-            </label>
+            <label>Start Date</label>
 
             <input
               type="date"
@@ -355,9 +327,7 @@ function Projects() {
 
           {/* Due Date */}
           <div className="form-field">
-            <label>
-              Due Date
-            </label>
+            <label>Due Date</label>
 
             <input
               type="date"
@@ -394,12 +364,58 @@ function Projects() {
         </form>
       </div>
 
+      {/* Search and Filter */}
+      <div className="project-controls">
+
+        {/* Search FIRST */}
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={searchTerm}
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
+        />
+
+        {/* Status SECOND */}
+        <div className="filter-group">
+          <label>Status:</label>
+
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(
+                event.target.value
+              )
+            }
+          >
+            <option value="All">
+              All
+            </option>
+
+            <option value="Todo">
+              Todo
+            </option>
+
+            <option value="In Progress">
+              In Progress
+            </option>
+
+            <option value="Completed">
+              Completed
+            </option>
+          </select>
+        </div>
+
+      </div>
+
       {/* Projects List */}
       <div className="projects-list-section">
 
         <div className="projects-list-header">
           <h2>
-            All Projects ({filteredProjects.length})
+            All Projects (
+            {filteredProjects.length})
           </h2>
         </div>
 

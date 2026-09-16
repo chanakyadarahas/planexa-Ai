@@ -3,6 +3,13 @@ import pool from "../db/connection.js";
 export const getTasks = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const { project_id } = req.query;
+
+    if (!project_id) {
+      return res.status(400).json({
+        error: "Project ID is required",
+      });
+    }
 
     const result = await pool.query(
       `SELECT t.*
@@ -10,8 +17,9 @@ export const getTasks = async (req, res) => {
        INNER JOIN projects p
          ON t.project_id = p.id
        WHERE p.user_id = $1
+         AND t.project_id = $2
        ORDER BY t.created_at DESC`,
-      [userId]
+      [userId, project_id]
     );
 
     res.json(result.rows);
@@ -49,7 +57,8 @@ export const createTask = async (req, res) => {
 
     if (projectResult.rows.length === 0) {
       return res.status(403).json({
-        error: "You do not have permission to add a task to this project",
+        error:
+          "You do not have permission to add a task to this project",
       });
     }
 
